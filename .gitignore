@@ -2,6 +2,8 @@
 /public/hot
 /public/storage
 /storage/*.key
+/storage/converted_videos/*.ts
+/storage/converted_videos/*.m3u8
 /vendor
 .env
 .env.backup
