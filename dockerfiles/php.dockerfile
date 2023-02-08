@@ -35,4 +35,6 @@ RUN a2enmod rewrite
 
 EXPOSE 80/tcp
 
+# CMD ["apache2-foreground"]
 CMD ["apache2-foreground"]
+# CMD ["php", "artisan", "serve"]
