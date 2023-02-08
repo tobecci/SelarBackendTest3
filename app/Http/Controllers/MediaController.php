@@ -4,34 +4,24 @@ namespace App\Http\Controllers;
 
 use FFMpeg\Format\Video\X264;
 use Illuminate\Http\Request;
+use App\Jobs\ProcessConversion;
 
 class MediaController extends Controller
 {
     //
     public function index(Request $request)
     {
-        self::convert_file();
+        $converted_video_file_name = uniqid() . '.m3u8';
+        self::convert_file($converted_video_file_name);
 
         return response([
-            'name' => 'tobecci',
-            'path' => storage_path()
+            'file_name' => $converted_video_file_name
         ], 201);
     }
 
-    public static function convert_file()
+    public static function convert_file($file_name)
     {
-        $video_file_name = 'test_video.mp4';
-        $converted_video_file_name = uniqid() . '.m3u8';
-        $lowBitrate = (new X264)->setKiloBitrate(480);
-        $midBitrate = (new X264)->setKiloBitrate(720);
-
-        \FFMpeg::fromDisk('videos')
-            ->open($video_file_name)
-            ->exportForHLS()
-            ->addFormat($lowBitrate)
-            ->addFormat((new X264)->setKiloBitrate(144))
-            ->addFormat($midBitrate)
-            ->toDisk('converted_videos')
-            ->save($converted_video_file_name);
+        dispatch(new ProcessConversion($file_name));
+        return true;
     }
 }
